@@ -80,20 +80,27 @@
 // }
 
 
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+
+    if (!email || !password) {
+      toast.warn("Please enter both email and password");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:4300/users/login", {
@@ -105,17 +112,20 @@ export default function Login() {
       });
 
       const data = await response.json();
+      
 
       if (!response.ok) {
-        setError(data.message || "Invalid email or password");
+        toast.error(data.message || "Invalid email or password");
       } else {
-        // TODO: save token or user info if needed
+        toast.success("Login successful!");
         console.log("Login successful:", data);
-        navigate("/dashboard"); // Redirect after login
+
+        // optional: save token, e.g., localStorage.setItem("token", data.token);
+        setTimeout(() => navigate("/dashboard"), 1500);
       }
     } catch (err) {
       console.error(err);
-      setError("Server error. Please try again later.");
+      toast.error("Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -123,6 +133,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen">
+    <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
       {/* Left Form 60% */}
       <div className="flex w-full lg:w-3/5 items-center justify-center bg-[#e0b6f5] min-h-screen p-4">
         <div className="w-11/12 max-w-lg p-10 bg-white rounded-3xl shadow-2xl">
@@ -150,7 +161,7 @@ export default function Login() {
             />
 
             {/* Error message */}
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
 
             <button
               type="submit"

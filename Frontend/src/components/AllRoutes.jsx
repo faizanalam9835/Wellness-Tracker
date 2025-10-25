@@ -5,6 +5,7 @@ import LoginPage from '../Pages/LoginPage'
 import LandingPage from '../Pages/LandingPage'
 import Dashboard from '../Pages/Dashboard'
 import Habits from '../Pages/Habits'
+import GoalsPage from "../Pages/GoalsPage";
 import ResetPasswordPage from '../Pages/Change'
 
 
@@ -24,6 +25,7 @@ export default function AllRoutes() {
         <Route path='/signup' element={<SignUpPage/>} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/habits' element={<Habits/>} />
+         <Route path="/goals" element={<GoalsPage />} />
 
         <Route path='/' element={<LandingPage/>} />
        <Route path='/dashboard' element={<Dashboard/>} />

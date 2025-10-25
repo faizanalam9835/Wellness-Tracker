@@ -33,10 +33,14 @@ export default function LoginPage() {
         },
         body: JSON.stringify({ email: form.email, password: form.password }),
       });
-
+      
       const data = await response.json();
       
+      
       localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.user.name)
+      localStorage.setItem("id", data.user.name)
+      localStorage.setItem("email", data.user.email)
       if (!response.ok) {
         toast.error(data.message || "Invalid email or password");
       } else {

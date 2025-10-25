@@ -1,276 +1,398 @@
-import React, { useState, useMemo } from "react"
+// Dashboard.jsx
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// ------------------- ICONS -------------------
+const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState('habits');
+  const [habits, setHabits] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(true);
 
-const Icon = {
-  Water: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c4 6 6 9 6 12a6 6 0 11-12 0c0-3 2-6 6-12z" />
-    </svg>
-  ),
-  Book: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m0 0a2.5 2.5 0 005 0V6a2.5 2.5 0 00-5 0zm-5 0v12a2.5 2.5 0 005 0V6a2.5 2.5 0 00-5 0z" />
-    </svg>
-  ),
-  Walk: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13 17h8l-3-5h-3l-3-5H5l3 5h3l3 5z" />
-    </svg>
-  ),
-  Sleep: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-    </svg>
-  ),
-  Food: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
-    </svg>
-  ),
-  Meditate: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0l-3 3m3-3l3 3m-3-9a9 9 0 11-9 9" />
-    </svg>
-  ),
-  Plus: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-    </svg>
-  ),
-  Minus: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-    </svg>
-  ),
-  Check: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  ),
-  Chart: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11 3h2v18h-2zM4 15h2v6H4zM18 9h2v12h-2z" />
-    </svg>
-  ),
-  Trophy: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8 21h8m-4 0v-4m0 0a8 8 0 008-8V5H4v4a8 8 0 008 8z" />
-    </svg>
-  ),
-  Calendar: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3M4 11h16M4 5h16a2 2 0 012 2v14H2V7a2 2 0 012-2z" />
-    </svg>
-  ),
-  Chat: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h8m-8 4h6m2 7l-4-4H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-3l-4 4z" />
-    </svg>
-  ),
-  Bell: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14V11a6 6 0 00-4-5.7V5a2 2 0 10-4 0v.3A6 6 0 006 11v3a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
-    </svg>
-  ),
-  Profile: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A9 9 0 0112 3a9 9 0 016.879 14.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  ),
-}
+  // Mock data initialization
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHabits([
+        { id: 1, name: 'Morning Meditation', streak: 15, completed: true, frequency: 'daily', color: 'bg-blue-500' },
+        { id: 2, name: 'Exercise', streak: 8, completed: false, frequency: 'daily', color: 'bg-green-500' },
+        { id: 3, name: 'Read Book', streak: 22, completed: true, frequency: 'daily', color: 'bg-purple-500' },
+        { id: 4, name: 'Drink Water', streak: 5, completed: false, frequency: 'daily', color: 'bg-cyan-500' },
+      ]);
+      
+      setGoals([
+        { id: 1, name: 'Run Marathon', progress: 65, target: 100, deadline: '2024-12-31' },
+        { id: 2, name: 'Learn Spanish', progress: 30, target: 100, deadline: '2024-10-15' },
+        { id: 3, name: 'Save $5000', progress: 45, target: 100, deadline: '2024-11-30' },
+      ]);
+      
+      setStats({
+        currentStreak: 15,
+        totalHabits: 8,
+        completedToday: 6,
+        monthlyCompletion: 78
+      });
+      
+      setLoading(false);
+    }, 2000);
 
-// ------------------- INITIAL DATA -------------------
-const initialHabits = [
-  { id: 1, name: "Drink Water", icon: <Icon.Water />, goal: 8, current: 0, unit: "glasses" },
-  { id: 2, name: "Read Book", icon: <Icon.Book />, goal: 30, current: 0, unit: "minutes" },
-  { id: 3, name: "Walk", icon: <Icon.Walk />, goal: 5000, current: 0, unit: "steps" },
-  { id: 4, name: "Sleep", icon: <Icon.Sleep />, goal: 8, current: 0, unit: "hours" },
-  { id: 5, name: "Eat Healthy", icon: <Icon.Food />, goal: 3, current: 0, unit: "meals" },
-  { id: 6, name: "Meditate", icon: <Icon.Meditate />, goal: 1, current: 0, unit: "session" },
-]
+    return () => clearTimeout(timer);
+  }, []);
 
-const quotes = [
-  "Small steps every day lead to big changes.",
-  "Discipline is stronger than motivation.",
-  "Your future is built by what you do today.",
-]
+  const toggleHabit = (id) => {
+    setHabits(habits.map(habit => 
+      habit.id === id ? { ...habit, completed: !habit.completed } : habit
+    ));
+  };
 
-// ------------------- APP -------------------
-export default function App() {
-  const [habits, setHabits] = useState(initialHabits)
-  const [showChat, setShowChat] = useState(false)
-  const [showProfile, setShowProfile] = useState(false)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  })
-  const quote = useMemo(() => quotes[Math.floor(Math.random() * quotes.length)], [])
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
 
-  const updateHabit = (id, diff) => {
-    setHabits((prev) =>
-      prev.map((h) =>
-        h.id === id ? { ...h, current: Math.min(h.goal, Math.max(0, h.current + diff)) } : h
-      )
-    )
+  const cardHoverVariants = {
+    hover: {
+      scale: 1.02,
+      boxShadow: "0 10px 30px -15px rgba(224, 182, 245, 0.5)",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-[#f0d9fa] flex items-center justify-center">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100 }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-[#e0b6f5] border-t-transparent rounded-full mx-auto mb-4"
+          ></motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-[#e0b6f5] font-semibold text-lg"
+          >
+            Loading Your Dashboard...
+          </motion.p>
+        </motion.div>
+      </div>
+    );
   }
 
-  const completed = habits.filter((h) => h.current >= h.goal).length
-  const progress = Math.round((completed / habits.length) * 100)
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 font-inter relative">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-            Hi Bhavya 👋
-          </h1>
-          <p className="text-gray-400">{today}</p>
-          <p className="italic text-gray-300 mt-2">"{quote}"</p>
-        </div>
-        <div className="flex space-x-4">
-          <button onClick={() => setShowProfile(true)} className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
-            <Icon.Profile />
-          </button>
-          <button className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
-            <Icon.Bell />
-          </button>
-        </div>
-      </header>
-
-      <section className="bg-gray-800 p-6 rounded-2xl mb-6 shadow-lg">
-        <h2 className="text-xl font-semibold mb-3 flex items-center space-x-2">
-          <Icon.Chart /> <span>Today's Progress</span>
-        </h2>
-        <div className="w-full bg-gray-700 h-4 rounded-full overflow-hidden">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-purple-600 h-4 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <p className="text-right mt-2 font-semibold text-blue-400">{progress}%</p>
-      </section>
-
-      <section className="grid md:grid-cols-2 gap-4">
-        {habits.map((h) => {
-          const percent = Math.min(100, (h.current / h.goal) * 100)
-          const done = h.current >= h.goal
-          return (
-            <div
-              key={h.id}
-              className={`bg-gray-800 p-4 rounded-2xl transition border ${
-                done ? "border-blue-500 bg-opacity-80" : "border-transparent"
-              }`}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center space-x-3">
-                  <div className={`p-3 rounded-full ${done ? "bg-blue-600" : "bg-gray-700"}`}>{h.icon}</div>
-                  <div>
-                    <h3 className={`font-semibold ${done ? "text-gray-400 line-through" : ""}`}>{h.name}</h3>
-                    <p className="text-gray-400 text-sm">
-                      {h.current}/{h.goal} {h.unit}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  {!done && (
-                    <>
-                      <button
-                        onClick={() => updateHabit(h.id, -1)}
-                        className="p-2 rounded-full bg-gray-700 hover:bg-gray-600"
-                      >
-                        <Icon.Minus />
-                      </button>
-                      <button
-                        onClick={() => updateHabit(h.id, 1)}
-                        className="p-2 rounded-full bg-blue-600 hover:bg-blue-500"
-                      >
-                        <Icon.Plus />
-                      </button>
-                    </>
-                  )}
-                  {done && <Icon.Check />}
-                </div>
-              </div>
-              <div className="bg-gray-700 h-2 rounded-full">
-                <div
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${percent}%` }}
-                />
-              </div>
-            </div>
-          )
-        })}
-      </section>
-
-      <section className="bg-gray-800 mt-8 p-6 rounded-2xl shadow-lg">
-        <h2 className="flex items-center space-x-2 text-xl font-semibold mb-4">
-          <Icon.Calendar />
-          <span>Calendar Overview</span>
-        </h2>
-        <p className="text-gray-400">Track your habits across days (coming soon)</p>
-      </section>
-
-      <section className="bg-gray-800 mt-8 p-6 rounded-2xl shadow-lg">
-        <h2 className="flex items-center space-x-2 text-xl font-semibold mb-4">
-          <Icon.Trophy />
-          <span>Analytics & Achievements</span>
-        </h2>
-        <p className="text-gray-400">Visual insights & weekly streaks (coming soon)</p>
-      </section>
-
-      {/* Chatbot Button */}
-      <button
-        onClick={() => setShowChat(true)}
-        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-500 p-4 rounded-full shadow-lg"
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-[#f0d9fa] p-4 md:p-6">
+      {/* Header */}
+      <motion.header
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100 }}
+        className="mb-8"
       >
-        <Icon.Chat />
-      </button>
-
-      {/* Chatbot Modal */}
-      {showChat && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-2xl w-96 relative">
-            <button onClick={() => setShowChat(false)} className="absolute top-2 right-2 text-gray-400 hover:text-white">
-              ✖
-            </button>
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-              <Icon.Chat />
-              <span>Chat Assistant</span>
-            </h3>
-            <div className="h-60 bg-gray-900 p-3 rounded-xl mb-4 overflow-y-auto text-gray-300">
-              <p>Hey Bhavya! How are your habits going today? 😊</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Habit Tracker</h1>
+            <p className="text-gray-600">Build better habits, achieve your goals</p>
+          </div>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center space-x-4"
+          >
+            <div className="relative">
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-10 h-10 bg-[#e0b6f5] rounded-full flex items-center justify-center text-white"
+              >
+                <i className="fas fa-bell"></i>
+              </motion.button>
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+              ></motion.span>
             </div>
-            <input
-              className="w-full bg-gray-700 p-2 rounded-lg outline-none text-gray-200"
-              placeholder="Type your message..."
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Profile Modal */}
-      {showProfile && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-2xl w-96 relative">
-            <button
-              onClick={() => setShowProfile(false)}
-              className="absolute top-2 right-2 text-gray-400 hover:text-white"
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center space-x-3 bg-white p-2 rounded-xl shadow-sm"
             >
-              ✖
-            </button>
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-              <Icon.Profile />
-              <span>Your Profile</span>
-            </h3>
-            <p className="text-gray-300 mb-2">👤 Name: Bhavya</p>
-            <p className="text-gray-300 mb-2">🔥 Streak: {completed} Days</p>
-            <p className="text-gray-300">🏆 Completion: {progress}%</p>
-          </div>
+              <div className="w-8 h-8 bg-[#e0b6f5] rounded-full flex items-center justify-center text-white font-semibold">
+                JD
+              </div>
+              <span className="font-medium text-gray-700">John Doe</span>
+            </motion.div>
+          </motion.div>
         </div>
-      )}
+      </motion.header>
+
+      {/* Stats Overview */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+      >
+        {[
+          { label: 'Current Streak', value: stats.currentStreak, icon: '🔥', color: 'bg-orange-500' },
+          { label: 'Total Habits', value: stats.totalHabits, icon: '📝', color: 'bg-blue-500' },
+          { label: 'Completed Today', value: stats.completedToday, icon: '✅', color: 'bg-green-500' },
+          { label: 'Monthly Progress', value: `${stats.monthlyCompletion}%`, icon: '📊', color: 'bg-[#e0b6f5]' },
+        ].map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            variants={itemVariants}
+            whileHover="hover"
+            variants1={cardHoverVariants}
+            className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+              </div>
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+                className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center text-white text-xl`}
+              >
+                {stat.icon}
+              </motion.div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column - Habits & Goals */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Tab Navigation */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-2xl p-2 shadow-lg"
+          >
+            <div className="flex space-x-2">
+              {['habits', 'goals'].map((tab) => (
+                <motion.button
+                  key={tab}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
+                    activeTab === tab
+                      ? 'bg-[#e0b6f5] text-white shadow-md'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {tab === 'habits' ? 'My Habits' : 'My Goals'}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Tab Content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl p-6 shadow-lg"
+            >
+              {activeTab === 'habits' ? (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">Today's Habits</h3>
+                  {habits.map((habit, index) => (
+                    <motion.div
+                      key={habit.id}
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => toggleHabit(habit.id)}
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            habit.completed
+                              ? 'bg-green-500 border-green-500'
+                              : 'border-gray-300'
+                          }`}
+                        >
+                          {habit.completed && (
+                            <motion.svg
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-4 h-4 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </motion.svg>
+                          )}
+                        </motion.button>
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{habit.name}</h4>
+                          <div className="flex items-center space-x-2 text-sm text-gray-600">
+                            <span>🔥 {habit.streak} days</span>
+                            <span>•</span>
+                            <span>{habit.frequency}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={`w-3 h-3 ${habit.color} rounded-full`}></div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">My Goals</h3>
+                  {goals.map((goal, index) => (
+                    <motion.div
+                      key={goal.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover="hover"
+                      variants={cardHoverVariants}
+                      className="p-4 bg-gray-50 rounded-xl"
+                    >
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-semibold text-gray-900">{goal.name}</h4>
+                        <span className="text-sm text-gray-500">Due: {goal.deadline}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${goal.progress}%` }}
+                          transition={{ duration: 1, delay: index * 0.2 }}
+                          className="bg-[#e0b6f5] h-3 rounded-full shadow-md"
+                        ></motion.div>
+                      </div>
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-sm text-gray-600">{goal.progress}% Complete</span>
+                        <span className="text-sm font-semibold text-[#e0b6f5]">
+                          {goal.progress}/{goal.target}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Right Column - Recent Activity & Quick Actions */}
+        <div className="space-y-6">
+          {/* Recent Activity */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-2xl p-6 shadow-lg"
+          >
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
+            <div className="space-y-4">
+              {[
+                { action: 'Completed Morning Meditation', time: '2 hours ago', icon: '🧘' },
+                { action: 'Exercise streak extended to 8 days', time: '4 hours ago', icon: '💪' },
+                { action: 'Read Book habit logged', time: '6 hours ago', icon: '📚' },
+                { action: 'New goal created: Learn Spanish', time: '1 day ago', icon: '🎯' },
+              ].map((activity, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 + index * 0.1 }}
+                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <div className="w-8 h-8 bg-[#e0b6f5] bg-opacity-20 rounded-full flex items-center justify-center">
+                    <span>{activity.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                    <p className="text-xs text-gray-500">{activity.time}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Quick Actions */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-white rounded-2xl p-6 shadow-lg"
+          >
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Add Habit', icon: '➕', color: 'bg-green-500' },
+                { label: 'Set Goal', icon: '🎯', color: 'bg-blue-500' },
+                { label: 'View Stats', icon: '📊', color: 'bg-purple-500' },
+                { label: 'Settings', icon: '⚙️', color: 'bg-gray-500' },
+              ].map((action, index) => (
+                <motion.button
+                  key={action.label}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-4 rounded-xl ${action.color} bg-opacity-10 hover:bg-opacity-20 transition-all duration-300 border border-transparent hover:border-${action.color.split('-')[1]}-300`}
+                >
+                  <div className="text-2xl mb-2">{action.icon}</div>
+                  <span className="text-sm font-medium text-gray-900">{action.label}</span>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Floating Action Button */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-[#e0b6f5] rounded-full shadow-lg flex items-center justify-center text-white text-xl z-50"
+      >
+        <i className="fas fa-plus"></i>
+      </motion.button>
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;

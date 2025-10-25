@@ -28,7 +28,7 @@ export default function Habits() {
     setLoading(true);
     setMessage("");
     try {
-      const res = await fetch("http://localhost:4300/habits", {
+      const res = await fetch("http://localhost:4300/habit/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

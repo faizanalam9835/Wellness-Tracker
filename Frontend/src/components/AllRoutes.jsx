@@ -6,6 +6,7 @@ import LandingPage from '../Pages/LandingPage'
 import Dashboard from '../Pages/Dashboard'
 import Habits from '../Pages/Habits'
 import ResetPasswordPage from '../Pages/Change'
+import Profile from '../Pages/Profile'
 
 
 // import LandingPage from '../Pages/LandingPage'
@@ -28,7 +29,7 @@ export default function AllRoutes() {
         <Route path='/' element={<LandingPage/>} />
        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path="/reset-password" element={<ResetPasswordPage/>} />
-        {/* // <Route path="/tasks" element={<MyTask/>} /> */}
+        // <Route path="/profile" element={<Profile/>} />
         {/* // <Route path="/teams" element={<Teams/>} /> */}
         {/* // <Route path='/notifications' element={<Notifications/>} /> */}
         {/* // <Route path='/analytics' element={<Analytics/>} /> */}

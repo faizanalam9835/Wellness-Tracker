@@ -1,398 +1,542 @@
-// Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
-const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('habits');
-  const [habits, setHabits] = useState([]);
-  const [goals, setGoals] = useState([]);
-  const [stats, setStats] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  // Mock data initialization
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHabits([
-        { id: 1, name: 'Morning Meditation', streak: 15, completed: true, frequency: 'daily', color: 'bg-blue-500' },
-        { id: 2, name: 'Exercise', streak: 8, completed: false, frequency: 'daily', color: 'bg-green-500' },
-        { id: 3, name: 'Read Book', streak: 22, completed: true, frequency: 'daily', color: 'bg-purple-500' },
-        { id: 4, name: 'Drink Water', streak: 5, completed: false, frequency: 'daily', color: 'bg-cyan-500' },
-      ]);
-      
-      setGoals([
-        { id: 1, name: 'Run Marathon', progress: 65, target: 100, deadline: '2024-12-31' },
-        { id: 2, name: 'Learn Spanish', progress: 30, target: 100, deadline: '2024-10-15' },
-        { id: 3, name: 'Save $5000', progress: 45, target: 100, deadline: '2024-11-30' },
-      ]);
-      
-      setStats({
-        currentStreak: 15,
-        totalHabits: 8,
-        completedToday: 6,
-        monthlyCompletion: 78
-      });
-      
-      setLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const toggleHabit = (id) => {
-    setHabits(habits.map(habit => 
-      habit.id === id ? { ...habit, completed: !habit.completed } : habit
-    ));
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100
-      }
-    }
-  };
-
-  const cardHoverVariants = {
-    hover: {
-      scale: 1.02,
-      boxShadow: "0 10px 30px -15px rgba(224, 182, 245, 0.5)",
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 10
-      }
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-[#f0d9fa] flex items-center justify-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 100 }}
-          className="text-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 border-4 border-[#e0b6f5] border-t-transparent rounded-full mx-auto mb-4"
-          ></motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-[#e0b6f5] font-semibold text-lg"
-          >
-            Loading Your Dashboard...
-          </motion.p>
-        </motion.div>
-      </div>
-    );
-  }
-
+// Mobile Header Component
+const MobileHeader = ({ toggleSidebar, navigate, userData, onGoToLanding }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-[#f0d9fa] p-4 md:p-6">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 100 }}
-        className="mb-8"
-      >
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Habit Tracker</h1>
-            <p className="text-gray-600">Build better habits, achieve your goals</p>
+    <div className="md:hidden bg-white shadow-2xl p-4 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center space-x-3">
+        <button 
+          onClick={toggleSidebar}
+          className="p-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+        >
+          <i className="fas fa-bars"></i>
+        </button>
+        <button 
+          onClick={() => navigate('/overview')}
+          className="flex items-center"
+        >
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#e0b6f5] to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+            W
           </div>
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-4"
-          >
-            <div className="relative">
-              <motion.button 
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 bg-[#e0b6f5] rounded-full flex items-center justify-center text-white"
-              >
-                <i className="fas fa-bell"></i>
-              </motion.button>
-              <motion.span 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
-              ></motion.span>
-            </div>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-3 bg-white p-2 rounded-xl shadow-sm"
-            >
-              <div className="w-8 h-8 bg-[#e0b6f5] rounded-full flex items-center justify-center text-white font-semibold">
-                JD
-              </div>
-              <span className="font-medium text-gray-700">John Doe</span>
-            </motion.div>
-          </motion.div>
-        </div>
-      </motion.header>
-
-      {/* Stats Overview */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-      >
-        {[
-          { label: 'Current Streak', value: stats.currentStreak, icon: '🔥', color: 'bg-orange-500' },
-          { label: 'Total Habits', value: stats.totalHabits, icon: '📝', color: 'bg-blue-500' },
-          { label: 'Completed Today', value: stats.completedToday, icon: '✅', color: 'bg-green-500' },
-          { label: 'Monthly Progress', value: `${stats.monthlyCompletion}%`, icon: '📊', color: 'bg-[#e0b6f5]' },
-        ].map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            variants={itemVariants}
-            whileHover="hover"
-            variants1={cardHoverVariants}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-              </div>
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center text-white text-xl`}
-              >
-                {stat.icon}
-              </motion.div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Habits & Goals */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Tab Navigation */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-2xl p-2 shadow-lg"
-          >
-            <div className="flex space-x-2">
-              {['habits', 'goals'].map((tab) => (
-                <motion.button
-                  key={tab}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                    activeTab === tab
-                      ? 'bg-[#e0b6f5] text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  {tab === 'habits' ? 'My Habits' : 'My Goals'}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Tab Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl p-6 shadow-lg"
-            >
-              {activeTab === 'habits' ? (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Today's Habits</h3>
-                  {habits.map((habit, index) => (
-                    <motion.div
-                      key={habit.id}
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => toggleHabit(habit.id)}
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            habit.completed
-                              ? 'bg-green-500 border-green-500'
-                              : 'border-gray-300'
-                          }`}
-                        >
-                          {habit.completed && (
-                            <motion.svg
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="w-4 h-4 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                            </motion.svg>
-                          )}
-                        </motion.button>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{habit.name}</h4>
-                          <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <span>🔥 {habit.streak} days</span>
-                            <span>•</span>
-                            <span>{habit.frequency}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={`w-3 h-3 ${habit.color} rounded-full`}></div>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">My Goals</h3>
-                  {goals.map((goal, index) => (
-                    <motion.div
-                      key={goal.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover="hover"
-                      variants={cardHoverVariants}
-                      className="p-4 bg-gray-50 rounded-xl"
-                    >
-                      <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-semibold text-gray-900">{goal.name}</h4>
-                        <span className="text-sm text-gray-500">Due: {goal.deadline}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${goal.progress}%` }}
-                          transition={{ duration: 1, delay: index * 0.2 }}
-                          className="bg-[#e0b6f5] h-3 rounded-full shadow-md"
-                        ></motion.div>
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-sm text-gray-600">{goal.progress}% Complete</span>
-                        <span className="text-sm font-semibold text-[#e0b6f5]">
-                          {goal.progress}/{goal.target}
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Right Column - Recent Activity & Quick Actions */}
-        <div className="space-y-6">
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl p-6 shadow-lg"
-          >
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
-            <div className="space-y-4">
-              {[
-                { action: 'Completed Morning Meditation', time: '2 hours ago', icon: '🧘' },
-                { action: 'Exercise streak extended to 8 days', time: '4 hours ago', icon: '💪' },
-                { action: 'Read Book habit logged', time: '6 hours ago', icon: '📚' },
-                { action: 'New goal created: Learn Spanish', time: '1 day ago', icon: '🎯' },
-              ].map((activity, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
-                  className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <div className="w-8 h-8 bg-[#e0b6f5] bg-opacity-20 rounded-full flex items-center justify-center">
-                    <span>{activity.icon}</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                    <p className="text-xs text-gray-500">{activity.time}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="bg-white rounded-2xl p-6 shadow-lg"
-          >
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Add Habit', icon: '➕', color: 'bg-green-500' },
-                { label: 'Set Goal', icon: '🎯', color: 'bg-blue-500' },
-                { label: 'View Stats', icon: '📊', color: 'bg-purple-500' },
-                { label: 'Settings', icon: '⚙️', color: 'bg-gray-500' },
-              ].map((action, index) => (
-                <motion.button
-                  key={action.label}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`p-4 rounded-xl ${action.color} bg-opacity-10 hover:bg-opacity-20 transition-all duration-300 border border-transparent hover:border-${action.color.split('-')[1]}-300`}
-                >
-                  <div className="text-2xl mb-2">{action.icon}</div>
-                  <span className="text-sm font-medium text-gray-900">{action.label}</span>
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
+        </button>
+      </div>
+      
+      <div className="flex items-center space-x-3">
+        <button 
+          onClick={onGoToLanding}
+          className="text-sm text-[#e0b6f5] font-semibold hover:text-purple-500 transition-colors bg-gray-100 px-3 py-1 rounded-lg shadow-sm"
+        >
+          Home
+        </button>
+        <div className="flex items-center bg-gray-100 px-2 py-1 rounded-lg shadow-sm">
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-1"></div>
+          <span className="text-xs text-gray-600">{userData.streak}d</span>
         </div>
       </div>
-
-      {/* Floating Action Button */}
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-[#e0b6f5] rounded-full shadow-lg flex items-center justify-center text-white text-xl z-50"
-      >
-        <i className="fas fa-plus"></i>
-      </motion.button>
     </div>
   );
 };
 
-export default Dashboard;
+// Mobile Bottom Navigation
+const MobileBottomNav = ({ activeSection, setActiveSection, navigate }) => {
+  const menuItems = [
+    { id: 'overview', icon: 'fa-chart-pie', label: 'Home' },
+    { id: 'habits', icon: 'fa-list-check', label: 'Habits' },
+    { id: 'goals', icon: 'fa-bullseye', label: 'Goals' },
+    { id: 'profile', icon: 'fa-user', label: 'Profile' },
+  ];
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-2xl z-50">
+      <div className="flex justify-around items-center p-2">
+        {menuItems.map(item => (
+          <button
+            key={item.id}
+            onClick={() => {
+              setActiveSection(item.id);
+              navigate(`/${item.id}`);
+            }}
+            className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 flex-1 mx-1 ${
+              activeSection === item.id 
+                ? 'text-[#e0b6f5] bg-gray-50 shadow-inner' 
+                : 'text-gray-500 hover:text-[#e0b6f5]'
+            }`}
+          >
+            <i className={`fas ${item.icon} text-lg mb-1`}></i>
+            <span className="text-xs font-medium">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Enhanced components for each section
+const Overview = ({ userData, toggleHabit }) => {
+  return (
+    <div className="space-y-4 md:space-y-6 animate-fadeIn pb-20 md:pb-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-[#e0b6f5] to-purple-500 bg-clip-text text-transparent">
+            Welcome back, {userData.name}!
+          </h2>
+          <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Ready to continue your wellness journey today?</p>
+        </div>
+        <div className="flex items-center mt-3 md:mt-0">
+          <div className="w-2 h-2 md:w-3 md:h-3 bg-green-400 rounded-full animate-pulse mr-2"></div>
+          <span className="text-xs md:text-sm text-gray-600">Current streak: {userData.streak} days 🔥</span>
+        </div>
+      </div>
+      
+      {/* Enhanced Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mt-4 md:mt-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-700 text-xs md:text-sm">STREAK</h3>
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#e0b6f5] rounded-full flex items-center justify-center shadow-lg">
+              <i className="fas fa-fire text-white text-sm"></i>
+            </div>
+          </div>
+          <p className="text-2xl md:text-4xl font-bold mt-3 text-[#e0b6f5]">{userData.streak}</p>
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-3 shadow-inner">
+            <div 
+              className="bg-[#e0b6f5] h-2 rounded-full transition-all duration-1000 shadow-lg" 
+              style={{ width: `${Math.min((userData.streak / 30) * 100, 100)}%` }}
+            ></div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-700 text-xs md:text-sm">HABITS</h3>
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#e0b6f5] rounded-full flex items-center justify-center shadow-lg">
+              <i className="fas fa-list-check text-white text-sm"></i>
+            </div>
+          </div>
+          <p className="text-2xl md:text-4xl font-bold mt-3 text-[#e0b6f5]">{userData.habits.length}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-2">
+            {userData.habits.filter(h => h.completed).length} completed today
+          </p>
+        </div>
+        
+        <div className="col-span-2 md:col-span-1 bg-white p-4 md:p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-700 text-xs md:text-sm">GOALS</h3>
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#e0b6f5] rounded-full flex items-center justify-center shadow-lg">
+              <i className="fas fa-bullseye text-white text-sm"></i>
+            </div>
+          </div>
+          <p className="text-2xl md:text-4xl font-bold mt-3 text-[#e0b6f5]">{userData.goals.length}</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-2">
+            Avg: {Math.round(userData.goals.reduce((acc, goal) => acc + goal.progress, 0) / userData.goals.length)}%
+          </p>
+        </div>
+      </div>
+      
+      {/* Enhanced Today's Habits */}
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl mt-4 md:mt-6">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <h3 className="text-lg md:text-2xl font-bold text-gray-800">Today's Habits</h3>
+          <div className="text-xs md:text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full shadow-inner">
+            {userData.habits.filter(h => h.completed).length}/{userData.habits.length}
+          </div>
+        </div>
+        <div className="space-y-3">
+          {userData.habits.map((habit, index) => (
+            <div 
+              key={habit.id} 
+              className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gray-50 hover:bg-white shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <div className="flex items-center flex-1 min-w-0">
+                <button 
+                  onClick={() => toggleHabit(habit.id)}
+                  className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center mr-3 md:mr-4 transition-all duration-300 flex-shrink-0 shadow-lg ${
+                    habit.completed 
+                      ? 'bg-[#e0b6f5] text-white' 
+                      : 'bg-white text-gray-400 hover:bg-[#e0b6f5] hover:text-white'
+                  }`}
+                >
+                  {habit.completed && <i className="fas fa-check text-xs md:text-sm"></i>}
+                </button>
+                <div className="min-w-0 flex-1">
+                  <span className={`text-sm md:text-lg font-medium truncate ${habit.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                    {habit.name}
+                  </span>
+                  <p className="text-xs md:text-sm text-gray-500 truncate">{habit.frequency}</p>
+                </div>
+              </div>
+              {habit.completed && (
+                <div className="text-green-500 animate-bounce ml-2 flex-shrink-0">
+                  <i className="fas fa-check-circle text-sm md:text-base"></i>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Actions for Mobile */}
+      <div className="md:hidden grid grid-cols-2 gap-3 mt-6">
+        <button className="bg-[#e0b6f5] text-white p-3 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+          <i className="fas fa-plus mr-2"></i>Add Habit
+        </button>
+        <button className="bg-white text-[#e0b6f5] p-3 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+          <i className="fas fa-bullseye mr-2"></i>Set Goal
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const HabitsPage = ({ userData, toggleHabit }) => {
+  const [newHabit, setNewHabit] = useState('');
+
+  const addHabit = () => {
+    if (newHabit.trim()) {
+      console.log('Adding new habit:', newHabit);
+      setNewHabit('');
+    }
+  };
+
+  return (
+    <div className="animate-fadeIn pb-20 md:pb-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-[#e0b6f5] to-purple-500 bg-clip-text text-transparent">
+          Your Habits
+        </h2>
+        <div className="flex mt-4 md:mt-0 w-full md:w-auto">
+          <input 
+            type="text" 
+            value={newHabit}
+            onChange={(e) => setNewHabit(e.target.value)}
+            placeholder="Add a new habit..."
+            className="flex-1 rounded-l-xl p-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#e0b6f5] transition-colors shadow-lg bg-white"
+          />
+          <button 
+            onClick={addHabit}
+            className="bg-[#e0b6f5] text-white px-4 md:px-6 rounded-r-xl hover:bg-purple-500 transition-colors shadow-lg hover:shadow-xl"
+          >
+            <i className="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {userData.habits.map((habit, index) => (
+          <div 
+            key={habit.id} 
+            className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300"
+          >
+            <div className="flex justify-between items-center mb-3 md:mb-4">
+              <h3 className="font-semibold text-gray-800 text-base md:text-lg truncate flex-1 mr-2">{habit.name}</h3>
+              <button 
+                onClick={() => toggleHabit(habit.id)}
+                className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 shadow-lg ${
+                  habit.completed 
+                    ? 'bg-[#e0b6f5] text-white' 
+                    : 'bg-gray-100 text-gray-400 hover:bg-[#e0b6f5] hover:text-white'
+                }`}
+              >
+                {habit.completed && <i className="fas fa-check text-xs"></i>}
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 mb-3 md:mb-4">Frequency: {habit.frequency}</p>
+            <div className="flex justify-between items-center text-sm">
+              <span className={`px-3 py-1 rounded-full text-xs shadow-inner ${
+                habit.completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+              }`}>
+                {habit.completed ? 'Completed' : 'Pending'}
+              </span>
+              <button className="text-[#e0b6f5] hover:text-purple-500 transition-colors">
+                <i className="fas fa-ellipsis-h"></i>
+              </button>
+            </div>
+          </div>
+        ))}
+        
+        {/* Add New Habit Card */}
+        <div className="bg-gradient-to-br from-[#e0b6f5] to-purple-400 p-4 md:p-6 rounded-2xl shadow-2xl cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[140px] md:min-h-[200px]">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-white/20 rounded-full flex items-center justify-center mb-3 md:mb-4 shadow-lg">
+            <i className="fas fa-plus text-xl md:text-2xl text-white"></i>
+          </div>
+          <h3 className="text-white font-semibold text-base md:text-lg text-center">Add New Habit</h3>
+          <p className="text-white/90 text-xs md:text-sm text-center mt-1">Start building new healthy routines</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GoalsPage = ({ userData }) => {
+  return (
+    <div className="animate-fadeIn pb-20 md:pb-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-[#e0b6f5] to-purple-500 bg-clip-text text-transparent">
+          Your Goals
+        </h2>
+        <button className="bg-[#e0b6f5] text-white px-4 py-3 md:px-6 md:py-3 rounded-xl hover:bg-purple-500 transition-colors mt-4 md:mt-0 text-sm md:text-base shadow-lg hover:shadow-xl w-full md:w-auto">
+          <i className="fas fa-plus mr-2"></i>
+          Set New Goal
+        </button>
+      </div>
+
+      <div className="space-y-4 md:space-y-6">
+        {userData.goals.map((goal, index) => (
+          <div 
+            key={goal.id} 
+            className="bg-white p-4 md:p-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300"
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 md:mb-4">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-gray-800 text-lg md:text-xl truncate">{goal.name}</h3>
+                <p className="text-gray-600 mt-1 text-sm md:text-base">Target: {goal.target}</p>
+              </div>
+              <span className="text-xl md:text-2xl font-bold text-[#e0b6f5] mt-2 md:mt-0 text-right">{goal.progress}%</span>
+            </div>
+            
+            <div className="w-full bg-gray-200 rounded-full h-3 md:h-4 mb-2 md:mb-3 shadow-inner">
+              <div 
+                className="bg-gradient-to-r from-[#e0b6f5] to-purple-500 h-3 md:h-4 rounded-full transition-all duration-1000 ease-out shadow-lg"
+                style={{ width: `${goal.progress}%` }}
+              ></div>
+            </div>
+            
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Progress</span>
+              <span>{goal.progress}% Complete</span>
+            </div>
+            
+            <div className="flex justify-between mt-3 md:mt-4">
+              <button className="text-[#e0b6f5] hover:text-purple-500 transition-colors text-sm">
+                <i className="fas fa-edit mr-1"></i>Edit
+              </button>
+              <button className="text-green-500 hover:text-green-600 transition-colors text-sm">
+                <i className="fas fa-chart-line mr-1"></i>Track
+              </button>
+            </div>
+          </div>
+        ))}
+        
+        {/* Add New Goal Card */}
+        <div className="bg-gradient-to-br from-[#e0b6f5] to-purple-400 p-6 md:p-8 rounded-2xl shadow-2xl cursor-pointer transition-all duration-300 text-center">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <i className="fas fa-bullseye text-2xl md:text-3xl text-white"></i>
+          </div>
+          <h3 className="text-white font-semibold text-lg md:text-xl mb-2">Set New Goal</h3>
+          <p className="text-white/90 text-sm md:text-base">What do you want to achieve next?</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Sidebar Component
+const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen, toggleSidebar, generatePDF, navigate, onGoToLanding }) => {
+  const menuItems = [
+    { id: 'overview', icon: 'fa-chart-pie', label: 'Overview' },
+    { id: 'habits', icon: 'fa-list-check', label: 'Habits' },
+    { id: 'goals', icon: 'fa-bullseye', label: 'Goals' },
+    { id: 'talk', icon: 'fa-comments', label: 'Talk with Buddy' },
+    { id: 'profile', icon: 'fa-user', label: 'Profile' },
+    { id: 'soulfuel', icon: 'fa-heart', label: 'SoulFuel' },
+    { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics' },
+  ];
+
+  return (
+    <div className={`bg-white shadow-2xl z-40 transition-all duration-300 ${
+      isSidebarOpen ? 'w-64 md:w-80 fixed inset-0 md:relative' : 'w-0 md:w-20'
+    } overflow-hidden flex flex-col`}>
+      {/* Close overlay for mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={toggleSidebar}
+        ></div>
+      )}
+      
+      <div className="p-4 md:p-6 flex items-center justify-between relative z-40 bg-white">
+        <button 
+          onClick={() => navigate('/overview')}
+          className={`flex items-center transition-opacity duration-300 ${!isSidebarOpen && 'md:opacity-0'} cursor-pointer`}
+        >
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-[#e0b6f5] to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+            W
+          </div>
+          <h1 className="text-lg md:text-xl font-bold ml-3 text-gray-800">Wellness Tracker</h1>
+        </button>
+        <button 
+          onClick={toggleSidebar}
+          className="p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors relative z-50"
+        >
+          <i className={`fas ${isSidebarOpen ? 'fa-times md:fa-chevron-left' : 'fa-bars md:fa-chevron-right'} transition-transform duration-300`}></i>
+        </button>
+      </div>
+      
+      <nav className="flex-1 p-4 md:p-6 relative z-40 bg-white">
+        <ul className="space-y-2">
+          {menuItems.map((item) => (
+            <li key={item.id}>
+              <button
+                onClick={() => {
+                  setActiveSection(item.id);
+                  navigate(`/${item.id}`);
+                  if (window.innerWidth < 768) {
+                    toggleSidebar();
+                  }
+                }}
+                className={`w-full flex items-center p-3 md:p-4 rounded-xl transition-all duration-300 group shadow-sm hover:shadow-md ${
+                  activeSection === item.id 
+                    ? 'bg-gradient-to-r from-[#e0b6f5] to-purple-500 text-white shadow-lg' 
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b6f5]'
+                }`}
+              >
+                <i className={`fas ${item.icon} text-base md:text-lg ${!isSidebarOpen && 'md:mx-auto'}`}></i>
+                <span className={`ml-3 md:ml-4 font-medium ${!isSidebarOpen && 'md:hidden'} text-sm md:text-base`}>
+                  {item.label}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      
+      <div className="p-4 md:p-6 relative z-40 bg-white space-y-2">
+        <button 
+          onClick={onGoToLanding}
+          className="w-full flex items-center p-3 md:p-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-[#e0b6f5] transition-all duration-300 group shadow-sm hover:shadow-md"
+        >
+          <i className={`fas fa-home text-base md:text-lg ${!isSidebarOpen && 'md:mx-auto'}`}></i>
+          <span className={`ml-3 md:ml-4 font-medium ${!isSidebarOpen && 'md:hidden'} text-sm md:text-base`}>Home</span>
+        </button>
+        <button 
+          onClick={generatePDF}
+          className="w-full flex items-center p-3 md:p-4 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-[#e0b6f5] transition-all duration-300 group shadow-sm hover:shadow-md"
+        >
+          <i className={`fas fa-file-pdf text-base md:text-lg ${!isSidebarOpen && 'md:mx-auto'}`}></i>
+          <span className={`ml-3 md:ml-4 font-medium ${!isSidebarOpen && 'md:hidden'} text-sm md:text-base`}>Download PDF</span>
+        </button>
+        <button className="w-full flex items-center p-3 md:p-4 rounded-xl text-gray-700 hover:bg-red-50 hover:text-red-500 transition-all duration-300 group shadow-sm hover:shadow-md">
+          <i className={`fas fa-right-from-bracket text-base md:text-lg ${!isSidebarOpen && 'md:mx-auto'}`}></i>
+          <span className={`ml-3 md:ml-4 font-medium ${!isSidebarOpen && 'md:hidden'} text-sm md:text-base`}>Logout</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Main WellnessTracker Component
+const WellnessTracker = () => {
+  const [activeSection, setActiveSection] = useState('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [userData, setUserData] = useState({
+    name: 'Alex',
+    streak: 12,
+    habits: [
+      { id: 1, name: 'Morning Meditation', completed: true, frequency: 'Daily' },
+      { id: 2, name: '30-min Exercise', completed: false, frequency: 'Daily' },
+      { id: 3, name: 'Drink 2L Water', completed: true, frequency: 'Daily' },
+      { id: 4, name: 'Read 20 pages', completed: false, frequency: 'Daily' },
+      { id: 5, name: 'Evening Reflection', completed: false, frequency: 'Daily' },
+      { id: 6, name: 'Healthy Breakfast', completed: true, frequency: 'Daily' }
+    ],
+    goals: [
+      { id: 1, name: 'Run 5K', progress: 70, target: '2 weeks' },
+      { id: 2, name: 'Meditate daily', progress: 85, target: '30 days' },
+      { id: 3, name: 'Sleep 8 hours', progress: 60, target: 'Ongoing' },
+      { id: 4, name: 'Read 5 books', progress: 40, target: '3 months' }
+    ],
+    wellnessStats: {
+      mindfulness: 75,
+      exercise: 60,
+      nutrition: 80,
+      sleep: 70
+    }
+  });
+
+  // Update active section based on route
+  useEffect(() => {
+    const path = location.pathname.substring(1) || 'overview';
+    setActiveSection(path);
+  }, [location]);
+
+  // Auto-close sidebar on desktop, keep closed on mobile by default
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const generatePDF = () => {
+    alert('PDF generation would be implemented here!');
+  };
+
+  const toggleHabit = (id) => {
+    setUserData(prev => ({
+      ...prev,
+      habits: prev.habits.map(habit => 
+        habit.id === id ? { ...habit, completed: !habit.completed } : habit
+      )
+    }));
+  };
+
+  const handleGoToLanding = () => {
+    // Navigate to your landing page route
+    navigate('/');
+  };
+
+  return (
+    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <Sidebar 
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        generatePDF={generatePDF}
+        navigate={navigate}
+        onGoToLanding={handleGoToLanding}
+      />
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto relative">
+        <MobileHeader 
+          toggleSidebar={toggleSidebar} 
+          navigate={navigate}
+          userData={userData}
+          onGoToLanding={handleGoToLanding}
+        />
+        <div className="p-4 md:p-6 lg:p-8">
+          <Routes>
+            <Route path="/" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
+            <Route path="/overview" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
+            <Route path="/habits" element={<HabitsPage userData={userData} toggleHabit={toggleHabit} />} />
+            <Route path="/goals" element={<GoalsPage userData={userData} />} />
+            <Route path="*" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
+          </Routes>
+        </div>
+        <MobileBottomNav 
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          navigate={navigate}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default WellnessTracker;

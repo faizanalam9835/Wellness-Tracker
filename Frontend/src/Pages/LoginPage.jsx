@@ -114,6 +114,7 @@ export default function Login() {
       const data = await response.json();
       
 
+      localStorage.setItem(data.token);
       if (!response.ok) {
         toast.error(data.message || "Invalid email or password");
       } else {

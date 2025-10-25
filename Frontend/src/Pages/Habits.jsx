@@ -30,6 +30,7 @@ const categoryColors = {
 
 const Habits = () => {
   const [habits, setHabits] = useState([]);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -40,6 +41,84 @@ const Habits = () => {
     timesPerDay: 1,
     reminderTime: "",
   });
+=======
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [frequency, setFrequency] = useState("daily");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const token = localStorage.getItem("token");
+
+  // ✅ Fetch all habits
+  const fetchHabits = async () => {
+    try {
+      const res = await fetch("http://localhost:4300/habits", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setHabits(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ✅ Create new habit
+  const createHabit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+    try {
+      const res = await fetch("http://localhost:4300/habit/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, category, frequency, timesPerDay: 1 }),
+      });
+
+      if (res.ok) {
+        setName("");
+        setCategory("");
+        setMessage("✅ Habit added successfully!");
+        fetchHabits();
+      } else {
+        setMessage("❌ Failed to create habit.");
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Server error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Mark habit complete
+  const completeHabit = async (id) => {
+    try {
+      await fetch(`http://localhost:4300/habits/${id}/complete`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchHabits();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ✅ Delete habit
+  const deleteHabit = async (id) => {
+    try {
+      await fetch(`http://localhost:4300/habits/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchHabits();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+>>>>>>> 854ff15c29108cd5ae2cffe32fe6f2ec74dc8789
 
   useEffect(() => {
     fetchHabits();

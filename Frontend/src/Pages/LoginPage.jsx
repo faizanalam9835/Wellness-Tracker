@@ -106,6 +106,7 @@ export default function Login() {
 
       const data = await response.json();
 
+      localStorage.setItem(data.token);
       if (!response.ok) {
         setError(data.message || "Invalid email or password");
       } else {

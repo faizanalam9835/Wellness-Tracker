@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import SignUpPage from '../Pages/SignUpPage'
 import LoginPage from '../Pages/LoginPage'
+import Habits from '../Pages/Habits'
 // import LandingPage from '../Pages/LandingPage'
 // import Dashboard from '../Pages/Dashboard'
 // import Profile from '../Pages/Profile'
@@ -17,6 +18,7 @@ export default function AllRoutes() {
       <Routes>
         <Route path='/signup' element={<SignUpPage/>} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/habits' element={<Habits />} />
 
         {/* <Route path='/' element={<LandingPage/>} />
         <Route path='/dashboard' element={<Dashboard/>} />

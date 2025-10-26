@@ -13,11 +13,11 @@ const Habit = require('../models/habit');
 const auth = require('../middlewares/authmiddleware');
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads/profile-pictures');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-  console.log('Created uploads directory:', uploadsDir);
-}
+// const uploadsDir = path.join(__dirname, '../uploads/profile-pictures');
+// if (!fs.existsSync(uploadsDir)) {
+//   fs.mkdirSync(uploadsDir, { recursive: true });
+//   console.log('Created uploads directory:', uploadsDir);
+// }
 
 // Configure multer for file uploads
 // const storage = multer.diskStorage({

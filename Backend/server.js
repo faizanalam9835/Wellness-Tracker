@@ -21,7 +21,7 @@ scheduler.init()
 app.use('/soulfuel',soulroutes );
 app.use('/notifications', notificationroutes);
 app.use('/analytics', analytics)
-app.use("/Goal" , goalroutes)
+app.use("/goal" , goalroutes)
 app.use("/habitLog" , habitlog)
 app.use("/users" , authroutes)
 app.use("/habit" , Habitroutes)

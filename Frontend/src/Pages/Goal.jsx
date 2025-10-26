@@ -40,7 +40,7 @@ function GoalsPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:4300/Goal/getgoal", {
+      const res = await fetch("https://wellness-tracker-3-ghm5.onrender.com/goal/getgoal", {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -68,7 +68,7 @@ function GoalsPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:4300/Goal/goalcreate", {
+      const res = await fetch("https://wellness-tracker-3-ghm5.onrender.com/Goal/goalcreate", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ function GoalsPage() {
     
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4300/Goal/${id}`, { 
+      const res = await fetch(`https://wellness-tracker-3-ghm5.onrender.com/Goal/${id}`, { 
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -126,7 +126,7 @@ function GoalsPage() {
   const markCompleted = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4300/Goal/${id}/complete`, {
+      const res = await fetch(`https://wellness-tracker-3-ghm5.onrender.com/${id}/complete`, {
         method: "PATCH",
         headers: { 
           "Authorization": `Bearer ${token}`,
@@ -151,7 +151,7 @@ function GoalsPage() {
   const updateProgress = async (id, progress) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4300/Goal/${id}`, {
+      const res = await fetch(`https://wellness-tracker-3-ghm5.onrender.com/Goal/${id}`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",

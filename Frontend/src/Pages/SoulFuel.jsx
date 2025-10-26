@@ -67,7 +67,7 @@ const SoulFuel = () => {
       setError(null);
 
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4300/soulfuel/daily', {
+      const response = await fetch('https://my-habit-5.onrender.com/soulfuel/daily', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -152,7 +152,7 @@ const SoulFuel = () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('id');
       
-      const response = await fetch(`http://localhost:4300/users/${userId}/notifications`, {
+      const response = await fetch(`https://my-habit-5.onrender.com/users/${userId}/notifications`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

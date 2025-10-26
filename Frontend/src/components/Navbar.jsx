@@ -37,7 +37,7 @@ export default function Navbar() {
     if (!userId || !token) return;
 
     try {
-      const res = await fetch(`http://localhost:4300/users/${userId}`, {
+      const res = await fetch(`https://my-habit-5.onrender.com/users/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export default function Navbar() {
         if (data.user.profilePicture) {
           imageUrl = data.user.profilePicture;
           if (!imageUrl.startsWith("http")) {
-            imageUrl = `http://localhost:4300/${imageUrl.replace(/^\//, "")}`;
+            imageUrl = `https://my-habit-5.onrender.com/${imageUrl.replace(/^\//, "")}`;
           }
         }
 

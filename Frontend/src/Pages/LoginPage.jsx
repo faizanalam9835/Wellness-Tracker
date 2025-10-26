@@ -26,7 +26,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("https://wellness-tracker-3-ghm5.onrender.com/users/login", {
+      const response = await fetch("https://my-habit-5.onrender.com/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:4300/users/forgot-password", {
+      const response = await fetch("https://my-habit-5.onrender.com/users/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

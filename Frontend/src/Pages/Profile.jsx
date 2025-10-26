@@ -61,7 +61,7 @@ const Profile = () => {
             console.log("🟢 Fetching profile for user:", userId);
 
             // Fetch user profile
-            const profileResponse = await fetch(`http://localhost:4300/users/${userId}`, {
+            const profileResponse = await fetch(`https://my-habit-5.onrender.com/users/${userId}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },
@@ -77,7 +77,7 @@ const Profile = () => {
             // Fetch wellness stats
             let statsData = {};
             try {
-                const statsResponse = await fetch(`http://localhost:4300/users/${userId}/stats`, {
+                const statsResponse = await fetch(`https://my-habit-5.onrender.com/users/${userId}/stats`, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },
@@ -134,7 +134,7 @@ const Profile = () => {
             const userId = localStorage.getItem("id");
             const token = localStorage.getItem("token");
 
-            const response = await fetch(`http://localhost:4300/users/${userId}`, {
+            const response = await fetch(`https://my-habit-5.onrender.com/users/${userId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -177,7 +177,7 @@ const Profile = () => {
 
             console.log("🟢 Uploading profile picture...", file);
 
-            const response = await fetch(`http://localhost:4300/users/${userId}/upload`, {
+            const response = await fetch(`https://my-habit-5.onrender.com/users/${userId}/upload`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -302,20 +302,20 @@ const Profile = () => {
 
         // If it starts with uploads/ (without slash), construct the full URL
         if (userData.profilePicture.startsWith('uploads/')) {
-            const fullUrl = `http://localhost:4300/${userData.profilePicture}`;
+            const fullUrl = `https://my-habit-5.onrender.com/${userData.profilePicture}`;
             console.log("🟢 Constructed URL from uploads/:", fullUrl);
             return fullUrl;
         }
 
         // If it starts with /uploads, construct the full URL
         if (userData.profilePicture.startsWith('/uploads')) {
-            const fullUrl = `http://localhost:4300${userData.profilePicture}`;
+            const fullUrl = `https://my-habit-5.onrender.com${userData.profilePicture}`;
             console.log("🟢 Constructed URL from /uploads:", fullUrl);
             return fullUrl;
         }
 
         // If it's just a filename, construct the path
-        const fullUrl = `http://localhost:4300/uploads/${userData.profilePicture}`;
+        const fullUrl = `https://my-habit-5.onrender.com/uploads/${userData.profilePicture}`;
         console.log("🟢 Constructed URL from filename:", fullUrl);
         return fullUrl;
     };

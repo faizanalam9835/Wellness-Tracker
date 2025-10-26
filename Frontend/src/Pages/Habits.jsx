@@ -85,7 +85,7 @@ const createHabitAPI = async (habitData) => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await fetch("http://localhost:4300/habit/create", {
+    const response = await fetch("https://my-habit-5.onrender.com/habit/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const getHabitsAPI = async () => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await fetch("http://localhost:4300/habit/get", {
+    const response = await fetch("https://my-habit-5.onrender.com/habit/get", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`
@@ -135,7 +135,7 @@ const completeHabitAPI = async (habitId) => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await fetch(`http://localhost:4300/habit/${habitId}/complete`, {
+    const response = await fetch(`https://my-habit-5.onrender.com/habit/${habitId}/complete`, {
       method: "PATCH",
       headers: {
         "Authorization": `Bearer ${token}`
@@ -159,7 +159,7 @@ const deleteHabitAPI = async (habitId) => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await fetch(`http://localhost:4300/habit/${habitId}`, {
+    const response = await fetch(`https://my-habit-5.onrender.com/habit/${habitId}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`

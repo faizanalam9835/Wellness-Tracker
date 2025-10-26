@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
     console.log("JSON stringified:", JSON.stringify(requestBody));
   
     try {
-      const response = await fetch("https://wellness-tracker-3-ghm5.onrender.com/users/reset-password", {
+      const response = await fetch("https://my-habit-5.onrender.com/users/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

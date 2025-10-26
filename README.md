@@ -85,7 +85,7 @@ npm install
 npm start
 
 
-The app will run on http://localhost:5174
+The app will run on (https://wellness-tracker-mu.vercel.app/)
 
 🧠 How It Works
 
@@ -131,7 +131,7 @@ npm run lint	Runs linting for code quality
 
 🌍 Multi-language support
 
-🧑‍💻 Developer
+🧑‍💻 Developers
 
 Author: [Faizan Alam , Shweta Bangar ,S.Bhavya sree]
 GitHub: @faizanalam9835,@Shwetaaa-coder,@Bhavyasree1711

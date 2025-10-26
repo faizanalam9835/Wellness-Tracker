@@ -8,7 +8,7 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-  const email = searchParams.get('email'); // Get email from URL
+  const email = searchParams.get('email'); 
  
   
   const [showPassword, setShowPassword] = useState({
@@ -31,7 +31,6 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setLoading(true);
   
-    // Validation
     if (form.newPassword.length < 6) {
       toast.error("Password should be at least 6 characters");
       setLoading(false);

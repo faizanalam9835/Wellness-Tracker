@@ -4,31 +4,22 @@ import { FaHeartbeat, FaLeaf, FaRunning, FaSmileBeam, FaUserCircle, FaChartLine,
 
 export default function LandingPage() {
   const accent = "#e0b6f5";
+  
+
+
+
+
+
+
+
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-2xl font-bold text-gray-900">
-            <FaLeaf style={{ color: accent }} /> Wellness - Tracker
-          </div>
-          <nav className="hidden md:flex gap-5 text-gray-700">
-            <a href="#features" className="hover:text-[${accent}]">Features</a>
-            <a href="#goals" className="hover:text-[${accent}]">Goals</a>
-            <a href="#community" className="hover:text-[${accent}]">Community</a>
-            <a href="#contact" className="hover:text-[${accent}]">Contact</a>
-          </nav>
-          <div className="flex items-center gap-3">
-            <button className={`px-4 py-2 rounded-full text-white`} style={{ backgroundColor: accent }}>Login</button>
-            <button className={`px-4 py-2 rounded-full text-white`} style={{ backgroundColor: accent }}>Signup</button>
-            <FaUserCircle className="text-3xl text-gray-700 hover:text-[${accent}] cursor-pointer" />
-          </div>
-        </div>
-      </header>
+     
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
+      <section className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10 items-center">
         <div>
           <motion.h1 initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:0.7}} className="text-5xl font-extrabold leading-tight text-gray-900">
             Build healthy habits for a balanced life
@@ -118,9 +109,30 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-gray-200 text-center text-sm text-gray-600">
-        © {new Date().getFullYear()} Wellness Habit Tracker — Nurture your mind and body 🌿
-      </footer>
+      <footer className="py-8 border-t border-gray-200 text-center text-sm text-gray-600 bg-white/90 backdrop-blur-md">
+  {/* Brand & Message */}
+  <p className="font-semibold text-gray-800">
+    © {new Date().getFullYear()} <span className="text-green-600">Wellness Habit Tracker</span> — Nurture your mind and body 🌿
+  </p>
+  <p className="mt-1">Made with ❤ for a healthier lifestyle</p>
+
+  {/* Quick Links */}
+  <div className="mt-4 flex justify-center gap-4">
+    <a href="#features" className="hover:text-green-500 transition-colors">Features</a>
+    <a href="#goals" className="hover:text-green-500 transition-colors">Goals</a>
+    <a href="#community" className="hover:text-green-500 transition-colors">Community</a>
+    <a href="#contact" className="hover:text-green-500 transition-colors">Contact</a>
+  </div>
+
+ 
+  
+
+  {/* Privacy / Terms */}
+  <div className="mt-4 flex justify-center gap-4 text-xs text-gray-500">
+    <a href="/privacy" className="hover:text-gray-800 transition-colors">Privacy Policy</a>
+    <a href="/terms" className="hover:text-gray-800 transition-colors">Terms of Service</a>
+  </div>
+</footer>
     </div>
   );
 }

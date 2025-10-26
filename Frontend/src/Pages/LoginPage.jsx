@@ -39,7 +39,7 @@ export default function LoginPage() {
       
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.user.name)
-      localStorage.setItem("id", data.user.name)
+      localStorage.setItem("id", data.user.id)
       localStorage.setItem("email", data.user.email)
       if (!response.ok) {
         toast.error(data.message || "Invalid email or password");

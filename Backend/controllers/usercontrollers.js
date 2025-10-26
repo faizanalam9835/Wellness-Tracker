@@ -71,9 +71,7 @@ exports.forgotPassword = async (req, res) => {
       await user.save()
   
       // Instead of frontend link, just show token in response (for Postman)
-      const resetLink = `http://localhost:4300/users/reset-password?token=${rawToken}&email=${encodeURIComponent(
-        user.email
-      )}`
+      const resetLink = `http://localhost:5177/reset-password?token=${rawToken}&email=${encodeURIComponent(user.email)}`;
   
       console.log("Password Reset Link (Postman):", resetLink)
   
@@ -95,6 +93,7 @@ exports.forgotPassword = async (req, res) => {
       return res.status(500).json({ message: "Server error" })
     }
   }
+
 
 exports.resetPassword = async (req, res) => {
   try {
@@ -137,3 +136,16 @@ exports.resetPassword = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
+

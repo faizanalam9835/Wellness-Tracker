@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import AiChat from './Chatboat';
 
 // Mobile Header Component
 const MobileHeader = ({ toggleSidebar, navigate, userData, onGoToLanding }) => {
@@ -76,17 +77,15 @@ const MobileBottomNav = ({ activeSection, setActiveSection, navigate }) => {
 const Overview = ({ userData, toggleHabit }) => {
   return (
     <div className="space-y-4 md:space-y-6 animate-fadeIn pb-20 md:pb-0">
-      <div className="flex flex-col md:flex-row md:items-center justify-between">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-[#e0b6f5] to-purple-500 bg-clip-text text-transparent">
-            Welcome back, {userData.name}!
-          </h2>
-          <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Ready to continue your wellness journey today?</p>
-        </div>
-        <div className="flex items-center mt-3 md:mt-0">
-          <div className="w-2 h-2 md:w-3 md:h-3 bg-green-400 rounded-full animate-pulse mr-2"></div>
-          <span className="text-xs md:text-sm text-gray-600">Current streak: {userData.streak} days 🔥</span>
-        </div>
+      <div>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-[#e0b6f5] to-purple-500 bg-clip-text text-transparent">
+          Welcome back, {userData.name}!
+        </h2>
+        <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Ready to continue your wellness journey today?</p>
+      </div>
+      <div className="flex items-center mt-3 md:mt-0">
+        <div className="w-2 h-2 md:w-3 md:h-3 bg-green-400 rounded-full animate-pulse mr-2"></div>
+        <span className="text-xs md:text-sm text-gray-600">Current streak: {userData.streak} days 🔥</span>
       </div>
       
       {/* Enhanced Stats Cards */}
@@ -337,7 +336,7 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen, toggleSidebar
     { id: 'overview', icon: 'fa-chart-pie', label: 'Overview' },
     { id: 'habits', icon: 'fa-list-check', label: 'Habits' },
     { id: 'goals', icon: 'fa-bullseye', label: 'Goals' },
-    { id: 'talk', icon: 'fa-comments', label: 'Talk with Buddy' },
+    { id: 'chatboat', icon: 'fa-comments', label: 'Talk with Buddy' },
     { id: 'profile', icon: 'fa-user', label: 'Profile' },
     { id: 'soulfuel', icon: 'fa-heart', label: 'SoulFuel' },
     { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics' },
@@ -357,7 +356,7 @@ const Sidebar = ({ activeSection, setActiveSection, isSidebarOpen, toggleSidebar
       
       <div className="p-4 md:p-6 flex items-center justify-between relative z-40 bg-white">
         <button 
-          onClick={() => navigate('/overview')}
+          onClick={() => navigate('/')}
           className={`flex items-center transition-opacity duration-300 ${!isSidebarOpen && 'md:opacity-0'} cursor-pointer`}
         >
           <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-[#e0b6f5] to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
@@ -433,7 +432,7 @@ const WellnessTracker = () => {
   const location = useLocation();
 
   const [userData, setUserData] = useState({
-    name: 'Alex',
+    name: '',
     streak: 12,
     habits: [
       { id: 1, name: 'Morning Meditation', completed: true, frequency: 'Daily' },
@@ -523,9 +522,10 @@ const WellnessTracker = () => {
         <div className="p-4 md:p-6 lg:p-8">
           <Routes>
             <Route path="/" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
-            <Route path="/overview" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
+            <Route path="/" element={<WellnessTracker/>} />
             <Route path="/habits" element={<HabitsPage userData={userData} toggleHabit={toggleHabit} />} />
             <Route path="/goals" element={<GoalsPage userData={userData} />} />
+            <Route path="/chatboat" element={<AiChat />} />
             <Route path="*" element={<Overview userData={userData} toggleHabit={toggleHabit} />} />
           </Routes>
         </div>

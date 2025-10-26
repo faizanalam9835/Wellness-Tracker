@@ -7,16 +7,14 @@ import Dashboard from '../Pages/Dashboard'
 import Habits from '../Pages/Habits'
 import ResetPasswordPage from '../Pages/Change'
 import Profile from '../Pages/Profile'
+import GoalsPage from '../Pages/Goal'
+import SoulFuel from '../Pages/SoulFuel'
+import Notification from '../Pages/Notification'
+import AnalyticsDashboard from '../Pages/Analytics'
+import AiChat from '../Pages/Chatboat'
 
 
-// import LandingPage from '../Pages/LandingPage'
-// import Dashboard from '../Pages/Dashboard'
-// import Profile from '../Pages/Profile'
-// import MyTask from '../Pages/MyTask'
-// import Teams from '../Pages/Teams'
-// import Notifications from '../Pages/Notifications'
-// import Analytics from '../Pages/Analytics'
-// import Projects from '../Pages/Projects'
+
 
 export default function AllRoutes() {
   return (
@@ -29,12 +27,12 @@ export default function AllRoutes() {
         <Route path='/' element={<LandingPage/>} />
        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path="/reset-password" element={<ResetPasswordPage/>} />
-        // <Route path="/profile" element={<Profile/>} />
-        {/* // <Route path="/teams" element={<Teams/>} /> */}
-        {/* // <Route path='/notifications' element={<Notifications/>} /> */}
-        {/* // <Route path='/analytics' element={<Analytics/>} /> */}
-        {/* // <Route path='/projects' element={<Projects/>} />  */}
-        {/*<Route path='' element={} /> */}
+         <Route path="/profile" element={<Profile/>} />
+         <Route path="/goals" element={<GoalsPage/>} />
+        <Route path='/soulfuel' element={<SoulFuel/>} />
+        <Route path='/notifications' element={<Notification/>} />
+        <Route path='/analytics' element={<AnalyticsDashboard/>} /> 
+        <Route path='/chatboat' element={<AiChat/>} />
       
       </Routes>
     </>

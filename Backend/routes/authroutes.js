@@ -5,11 +5,11 @@ const authController = require("../controllers/usercontrollers");
 // routes/userRoutes.js - Add these routes
 
 // const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const User = require('../models/userModel');
-const Goal = require('../models/goal');
-const Habit = require('../models/habit');
+// const path = require('path');
+// const fs = require('fs');
+// const User = require('../models/userModel');
+// const Goal = require('../models/goal');
+// const Habit = require('../models/habit');
 const auth = require('../middlewares/authmiddleware');
 
 // Ensure uploads directory exists
@@ -173,98 +173,98 @@ const auth = require('../middlewares/authmiddleware');
 // });
 
 // Update user profile
-router.put('/:id', auth, async (req, res) => {
-  try {
-    const { name, email, contact, goal } = req.body;
+// router.put('/:id', auth, async (req, res) => {
+//   try {
+//     const { name, email, contact, goal } = req.body;
     
-    console.log('Updating user profile:', { userId: req.user.id, updates: req.body });
+//     console.log('Updating user profile:', { userId: req.user.id, updates: req.body });
     
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, email, contact, goal },
-      { new: true, runValidators: true }
-    );
+//     const user = await User.findByIdAndUpdate(
+//       req.user.id,
+//       { name, email, contact, goal },
+//       { new: true, runValidators: true }
+//     );
     
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'User not found'
+//       });
+//     }
     
-    console.log('User profile updated successfully:', user.email);
+//     console.log('User profile updated successfully:', user.email);
     
-    res.json({
-      success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        contact: user.contact,
-        goal: user.goal,
-        profilePicture: user.profilePicture
-      },
-      message: 'Profile updated successfully'
-    });
+//     res.json({
+//       success: true,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         contact: user.contact,
+//         goal: user.goal,
+//         profilePicture: user.profilePicture
+//       },
+//       message: 'Profile updated successfully'
+//     });
     
-  } catch (err) {
-    console.error('Error updating profile:', err);
+//   } catch (err) {
+//     console.error('Error updating profile:', err);
     
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation error: ' + Object.values(err.errors).map(e => e.message).join(', ')
-      });
-    }
+//     if (err.name === 'ValidationError') {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Validation error: ' + Object.values(err.errors).map(e => e.message).join(', ')
+//       });
+//     }
     
-    if (err.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email already exists'
-      });
-    }
+//     if (err.code === 11000) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Email already exists'
+//       });
+//     }
     
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + err.message
-    });
-  }
-});
+//     res.status(500).json({
+//       success: false,
+//       message: 'Server error: ' + err.message
+//     });
+//   }
+// });
 
-// Get user by ID
-router.get('/:id', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
+// // Get user by ID
+// router.get('/:id', auth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id).select('-password');
     
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'User not found'
+//       });
+//     }
     
-    res.json({
-      success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        contact: user.contact,
-        goal: user.goal,
-        profilePicture: user.profilePicture
-      }
-    });
+//     res.json({
+//       success: true,
+//       user: {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//         contact: user.contact,
+//         goal: user.goal,
+//         profilePicture: user.profilePicture
+//       }
+//     });
     
-  } catch (err) {
-    console.error('Error fetching user:', err);
-    res.status(500).json({
-      success: false,
-      message: 'Server error: ' + err.message
-    });
-  }
-});
+//   } catch (err) {
+//     console.error('Error fetching user:', err);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Server error: ' + err.message
+//     });
+//   }
+// });
 
-module.exports = router;
+
 
 // register
 router.post('/register', authController.register);

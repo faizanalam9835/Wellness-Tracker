@@ -15,7 +15,7 @@ app.use(express.json())
 const PORT = process.env.PORT || 4300
 const cors = require('cors')
 const path = require("path")
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors())
 connectDB()
 

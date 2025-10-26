@@ -23,7 +23,6 @@ export default function AllRoutes() {
         <Route path='/signup' element={<SignUpPage/>} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/habits' element={<Habits/>} />
-
         <Route path='/' element={<LandingPage/>} />
        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path="/reset-password" element={<ResetPasswordPage/>} />

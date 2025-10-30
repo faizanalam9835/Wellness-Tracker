@@ -126,7 +126,7 @@ function GoalsPage() {
   const markCompleted = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`https://my-habit-5.onrender.com/${id}/complete`, {
+      const res = await fetch(`https://my-habit-5.onrender.com/Goal/${id}/complete`, {
         method: "PATCH",
         headers: { 
           "Authorization": `Bearer ${token}`,
